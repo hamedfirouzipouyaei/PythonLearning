@@ -16,9 +16,14 @@ class TestClass:
 
 
 
+
+
 def main():
     test_instance = TestClass(10)
     test_instance.display()
+
+    list_example = [x**2 for x in range(5)]
+    print("List comprehension example:", list_example)
 
 if __name__ == "__main__":
     main()
