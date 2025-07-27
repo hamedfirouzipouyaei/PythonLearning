@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 from numpy.random import randn
 
+import os
+
+
 
 
 list_ = ['a', 'b', 'c']
@@ -115,6 +118,95 @@ print("Concatenated DataFrame with axis=1:")
 print(pd.concat([df4, df6], axis=1))  # Concatenating along columns
 
 print("---------------READING AND WRITING DATA-----------------")
+print("Current working directory:", os.getcwd())
+print("Files in current directory:", os.listdir('.'))
+
+# Get script directory first
+script_dir = os.path.dirname(os.path.abspath(__file__))
+print("Script directory:", script_dir)
+print("Files in script directory:", os.listdir(script_dir))
+
 # Reading and writing data
 df7 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+# Save current directory and change to script directory
+original_dir = os.getcwd()
+os.chdir(script_dir)
+
 df7.to_csv('data.csv', index=False)  # Writing DataFrame to CSV
+df8 = pd.read_csv('data.csv')  # Reading DataFrame from CSV
+
+# Change back to original directory
+os.chdir(original_dir)
+
+print("DataFrame read from CSV:")
+print(df8)
+print("CSV file successfully created in:", script_dir)
+
+# Save DataFrame to Excel
+try:
+    os.chdir(script_dir)  # Change to script directory
+    df7.to_excel('data.xlsx', index=False)  # Writing DataFrame to Excel
+    df8 = pd.read_excel('data.xlsx')  # Reading DataFrame from Excel
+    os.chdir(original_dir)  # Change back to original directory
+
+    print("DataFrame read from Excel:")
+    print(df8)
+    print("Excel file successfully created in:", script_dir)
+except ImportError:
+    os.chdir(original_dir)  # Ensure we change back even if there's an error
+    print("openpyxl is not installed. Skipping Excel operations.")
+    print("To install: pip install openpyxl")
+except Exception as e:
+    os.chdir(original_dir)  # Ensure we change back even if there's an error
+    print(f"Error with Excel operations: {e}")
+
+# Save DataFrame to JSON
+try:
+    os.chdir(script_dir)  # Change to script directory
+    df7.to_json('data.json')  # Writing DataFrame to JSON
+    df8 = pd.read_json('data.json')  # Reading DataFrame from JSON
+    os.chdir(original_dir)  # Change back to original directory
+
+    print("DataFrame read from JSON:")
+    print(df8)
+    print("JSON file successfully created in:", script_dir)
+except Exception as e:
+    os.chdir(original_dir)  # Ensure we change back even if there's an error
+    print(f"Error with JSON operations: {e}")
+
+# Save DataFrame to HTML
+try:
+    os.chdir(script_dir)  # Change to script directory
+    df7.to_html('data.html', index=False)  # Writing DataFrame to HTML
+    df8 = pd.read_html('data.html')[0]  # Reading DataFrame from HTML
+    os.chdir(original_dir)  # Change back to original directory
+
+    print("DataFrame read from HTML:")
+    print(df8)
+    print("HTML file successfully created in:", script_dir)
+except ImportError:
+    os.chdir(original_dir)  # Ensure we change back even if there's an error
+    print("lxml or html5lib is not installed. Skipping HTML operations.")
+    print("To install: pip install lxml html5lib")
+except Exception as e:
+    os.chdir(original_dir)  # Ensure we change back even if there's an error
+    print(f"Error with HTML operations: {e}")
+
+# Save DataFrame to SQL (requires SQLAlchemy)
+try:
+    from sqlalchemy import create_engine
+    os.chdir(script_dir)  # Change to script directory
+    engine = create_engine('sqlite:///data.db')  # Using SQLite for simplicity
+    df7.to_sql('data_table', con=engine, index=False, if_exists='replace')  # Writing DataFrame to SQL
+    df8 = pd.read_sql('data_table', con=engine)  # Reading DataFrame from SQL
+    os.chdir(original_dir)  # Change back to original directory
+
+    print("DataFrame read from SQL:")
+    print(df8)
+    print("SQL table successfully created in SQLite database.") 
+except ImportError:
+    print("SQLAlchemy is not installed. Skipping SQL operations.")
+except Exception as e:
+    os.chdir(original_dir)  # Ensure we change back even if there's an error
+    print(f"Error with SQL operations: {e}")
